@@ -15,7 +15,9 @@ public class Cliente {
     private final String nombre;
     private String correo;
     private String telefono;
+    private boolean preferente;
     
+    public boolean isPreferente() { return preferente; }
     public String getId() { return id; }
     public String getNombre() { return nombre; }
     public String getCorreo() { return correo; }
@@ -23,11 +25,13 @@ public class Cliente {
     
     public void setCorreo(String correo) { this.correo = Objects.requireNonNull(correo,"El correo no puede ser un valor nulo"); }
     public void setTelefono(String telefono) { this.telefono = Objects.requireNonNull(telefono,"El telefono no puede ser un valor nulo"); }
+    public void setPreferente(boolean preferente) { this.preferente = preferente; }
 
     public Cliente(String id, String nombre, String correo, String telefono) {
         this.id = Objects.requireNonNull(id,"El id no puede ser un valor nulo");
         this.nombre = Objects.requireNonNull(nombre,"El nombre no puede ser un valor nulo");
         this.correo = Objects.requireNonNull(correo,"El correo no puede ser un valor nulo");
         this.telefono = Objects.requireNonNull(telefono,"El telefono no puede ser un valor nulo");
+        this.preferente = false;
     }
 }
