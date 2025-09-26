@@ -26,6 +26,7 @@ public class ServicioClientes {
         validarRequeridos(id, nombre, correo, telefono);
         if (gestor.existe(id)) throw new IllegalArgumentException("Ya existe un registro con id=" + id);
         if (!EMAIL.matcher(correo).matches()) throw new IllegalArgumentException("Formato de correo inválido");
+        nombre = nombrePropio(nombre);
         Cliente cliente = new Cliente(id, nombre, correo, telefono);
         cliente.setPreferente(preferente);
         gestor.guardar(cliente);
@@ -82,5 +83,21 @@ public class ServicioClientes {
         Objects.requireNonNull(cliente, "No se ha cargado ningun registro");
         validarRequeridos(correo,telefono);
         return !(cliente.getCorreo().equals(correo) && cliente.getTelefono().equals(telefono) && cliente.isPreferente() == preferente);
+    }
+    
+    private String nombrePropio(String nombre){
+        if (nombre == null || nombre.isBlank()) return nombre;
+        String[] letras = nombre.trim().toLowerCase().split("\\s+");
+        StringBuilder ie = new StringBuilder();
+        for (String letra : letras){
+            if (letra.length() > 0){
+            ie.append(Character.toUpperCase(letra.charAt(0)));
+            if (letra.length()>1){
+                ie.append(letra.substring(1));
+            }
+            ie.append(" ");
+        }
+        }
+        return ie.toString().trim();
     }
 }
