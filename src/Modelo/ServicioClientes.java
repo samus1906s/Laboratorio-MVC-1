@@ -22,22 +22,25 @@ public class ServicioClientes {
         this.gestor = gestor;
     }
     
-    public void guardar(String id, String nombre, String correo, String telefono) {
+    public void guardar(String id, String nombre, String correo, String telefono, boolean preferente) {
         validarRequeridos(id, nombre, correo, telefono);
         if (gestor.existe(id)) throw new IllegalArgumentException("Ya existe un registro con id=" + id);
         if (!EMAIL.matcher(correo).matches()) throw new IllegalArgumentException("Formato de correo inválido");
-        gestor.guardar(new Cliente(id, nombre, correo, telefono));
+        Cliente cliente = new Cliente(id, nombre, correo, telefono);
+        cliente.setPreferente(preferente);
+        gestor.guardar(cliente);
     }
     
-    public void actualizar(String id, String correo, String telefono) {
+    public void actualizar(String id, String correo, String telefono, boolean preferente) {
         Objects.requireNonNull(ultimoRegistro(), "No se ha cargado ningun registro");
         validarRequeridos(id, correo, telefono);
-        if(!hayCambios(id, correo, telefono)) return;
+        if(!hayCambios(id, correo, telefono, preferente)) return;
         if (!gestor.existe(id)) throw new IllegalArgumentException("No existe un registro con id=" + id);
         if (!EMAIL.matcher(correo).matches()) throw new IllegalArgumentException("Formato de correo inválido");
         Cliente cliente=gestor.buscar(id);
         cliente.setCorreo(correo);
         cliente.setTelefono(telefono);
+        cliente.setPreferente(preferente);
         gestor.actualizar(cliente);
     }
     
@@ -74,10 +77,10 @@ public class ServicioClientes {
         }
     }
     
-    private boolean hayCambios(String id,String correo,String telefono){
+    private boolean hayCambios(String id,String correo,String telefono, boolean preferente){
         Cliente cliente = gestor.buscar(id);
         Objects.requireNonNull(cliente, "No se ha cargado ningun registro");
         validarRequeridos(correo,telefono);
-        return !(cliente.getCorreo().equals(correo) && cliente.getTelefono().equals(telefono));
+        return !(cliente.getCorreo().equals(correo) && cliente.getTelefono().equals(telefono) && cliente.isPreferente() == preferente);
     }
 }
