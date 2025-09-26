@@ -71,6 +71,10 @@ public class ServicioClientes {
         return gestor.listar();
     }
     
+    public java.util.List<Cliente> listarHistorico() {
+        return gestor.listarHistorico();
+    }
+    
     private void validarRequeridos(String... datos){
         for(String dato:datos){
             if (dato==null || dato.isBlank())

@@ -17,5 +17,6 @@ public interface IGestorClientes {
     Cliente buscar(String id);
     boolean existe(String id);
     List<Cliente> listar();
+    java.util.List<Cliente> listarHistorico();
     public Cliente ultimoRegistro();
 }
