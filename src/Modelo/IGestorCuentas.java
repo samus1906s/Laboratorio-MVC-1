@@ -13,11 +13,11 @@ import java.util.List;
  */
 public interface IGestorCuentas {
     void crearCuenta(String titularId, TipoCuenta tipo) throws Exception;
-    void eliminar(String numero) throws Exception;;
-    void actualizar(String numero, EstadoCuenta estado) throws Exception;;
-    Cuenta buscar(String numero) throws Exception;;
+    void eliminar(String numero) throws Exception;
+    void actualizar(String numero, EstadoCuenta estado) throws Exception;
+    Cuenta buscar(String numero) throws Exception;
     List<Cuenta> listar();
-    void depositar(String numero, double monto) throws Exception;;
-    void retirar(String numero, double monto) throws Exception;;
-    void tranferir(String origen, String destino, double monto) throws Exception;;
+    void depositar(String numero, double monto) throws Exception;
+    void retirar(String numero, double monto) throws Exception;
+    void tranferir(String origen, String destino, double monto) throws Exception;
 }
