@@ -5,8 +5,11 @@
 package Vista;
 
 import Modelo.GestorClientesMem;
+import Modelo.GestorCuentas;
 import Modelo.IGestorClientes;
+import Modelo.IGestorCuentas;
 import Modelo.ServicioClientes;
+import Modelo.ServicioCuentas;
 import javax.swing.JFrame;
 
 /**
@@ -38,6 +41,7 @@ public class FrmMain extends javax.swing.JFrame {
         menuBar = new javax.swing.JMenuBar();
         menuAdmin = new javax.swing.JMenu();
         menuClientes = new javax.swing.JMenuItem();
+        menuTransacciones = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -64,6 +68,15 @@ public class FrmMain extends javax.swing.JFrame {
         });
         menuAdmin.add(menuClientes);
 
+        menuTransacciones.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        menuTransacciones.setText("Transacciones");
+        menuTransacciones.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuTransaccionesActionPerformed(evt);
+            }
+        });
+        menuAdmin.add(menuTransacciones);
+
         menuBar.add(menuAdmin);
 
         setJMenuBar(menuBar);
@@ -89,6 +102,14 @@ public class FrmMain extends javax.swing.JFrame {
         this.dtpMenu.add(frm);
         frm.setVisible(true);
     }//GEN-LAST:event_menuClientesActionPerformed
+
+    private void menuTransaccionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuTransaccionesActionPerformed
+        IGestorCuentas gestor2 = new GestorCuentas();
+        ServicioCuentas servicio2 = new ServicioCuentas(gestor2);
+        //FrmTransacciones frm2 = new FrmTransacciones(servicio2);
+        //this.dtpMenu.add(frm2);
+        //frm2.setVisible(true);
+    }//GEN-LAST:event_menuTransaccionesActionPerformed
 
     /**
      * @param args the command line arguments
@@ -120,5 +141,6 @@ public class FrmMain extends javax.swing.JFrame {
     private javax.swing.JMenu menuAdmin;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem menuClientes;
+    private javax.swing.JMenuItem menuTransacciones;
     // End of variables declaration//GEN-END:variables
 }
