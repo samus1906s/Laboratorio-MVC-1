@@ -106,9 +106,9 @@ public class FrmMain extends javax.swing.JFrame {
     private void menuTransaccionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuTransaccionesActionPerformed
         IGestorCuentas gestor2 = new GestorCuentas();
         ServicioCuentas servicio2 = new ServicioCuentas(gestor2);
-        //FrmTransacciones frm2 = new FrmTransacciones(servicio2);
-        //this.dtpMenu.add(frm2);
-        //frm2.setVisible(true);
+        FrmTransacciones frm2 = new FrmTransacciones(servicio2);
+        this.dtpMenu.add(frm2);
+        frm2.setVisible(true);
     }//GEN-LAST:event_menuTransaccionesActionPerformed
 
     /**
