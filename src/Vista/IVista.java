@@ -24,4 +24,5 @@ public interface IVista<Entidad> {
     public void mostrarMensaje(String msg, String titulo);
     public void mostrarError(String msg);
     public String solicitar(String msg, String titulo);
+    
 }
