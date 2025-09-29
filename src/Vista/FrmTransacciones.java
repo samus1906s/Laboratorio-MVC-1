@@ -4,35 +4,85 @@
  */
 package Vista;
 
-import Controlador.ControladorCuentas;
+import Controlador.ControladorTransacciones;
+import Modelo.Cuenta;
 import Modelo.ServicioCuentas;
 import Modelo.Transaccion;
 import Vista.IVista;
-import Vista.UtilGui;
 import java.awt.Color;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author je110
  */
 public class FrmTransacciones extends javax.swing.JInternalFrame implements IVista <Transaccion> {
 
-    private ControladorCuentas controlador;
+    private ControladorTransacciones controlador;
+
     /**
      * Creates new form FrmTransacciones
      */
     public FrmTransacciones() {
         initComponents();
-        Movimientos.getTableHeader().setBackground(new Color(44, 62, 80));
-        Movimientos.getTableHeader().setForeground(Color.WHITE);
-        Movimientos.setRowHeight(25);
-        Movimientos.setGridColor(new Color(233, 236, 239));
+        tblHistorial.getTableHeader().setBackground(new Color(44, 62, 80));
+        tblHistorial.getTableHeader().setForeground(Color.WHITE);
+        tblHistorial.setRowHeight(25);
+        tblHistorial.setGridColor(new Color(233, 236, 239));
+        txtCuentaDestino.setEnabled(false);
+        btnBuscarCuentaDestino.setEnabled(false);
+        txtTitularDestino.setEnabled(false);
+        rdBtnTransferencia.addActionListener(e -> {
+            txtCuentaDestino.setEnabled(true);
+            btnBuscarCuentaDestino.setEnabled(true);
+            txtTitularDestino.setEnabled(true);
+        });
+
+        rdBtnDeposito.addActionListener(e -> {
+            txtCuentaDestino.setEnabled(false);
+            btnBuscarCuentaDestino.setEnabled(false);
+            txtTitularDestino.setEnabled(false);
+        });
+
+        rdBtnRetiro.addActionListener(e -> {
+            txtCuentaDestino.setEnabled(false);
+            btnBuscarCuentaDestino.setEnabled(false);
+            txtTitularDestino.setEnabled(false);
+        });
+
     }
 
     public FrmTransacciones(ServicioCuentas servicio) {
         this();
-        controlador = new ControladorCuentas(servicio,this);
+        controlador = new ControladorTransacciones(servicio,this);
     }
-    
+
+    public void cargarHistorial(List<Transaccion> historial) {
+        DefaultTableModel model = (DefaultTableModel) tblHistorial.getModel();
+        model.setRowCount(0); 
+        for (Transaccion t : historial) {
+            model.addRow(new Object[]{
+                t.getFecha(),
+                t.getTipotransaccion(),
+                t.getMonto(),
+                t.getCuentaOrigen(),
+                t.getCuentaDestino(),
+                t.getSaldoFinal()
+            });
+        }
+    }
+
+
+    public void mostrarCuentaOrigen(Cuenta c) {
+       lblTitular.setText(c.getTitularId());
+       lblSaldoActual.setText(String.valueOf(c.getSaldo()));
+    }
+
+    public void mostrarCuentaDestino(Cuenta c) {
+       lblTitularDestino.setText(c.getTitularId());
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -45,35 +95,35 @@ public class FrmTransacciones extends javax.swing.JInternalFrame implements IVis
 
         GrpBtnTransacciones = new javax.swing.ButtonGroup();
         jPanel2 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        lblCuentaOrigen = new javax.swing.JLabel();
+        lblTitular = new javax.swing.JLabel();
         txtCuentaOrigen = new javax.swing.JTextField();
         btnBuscarCuentaOrigen = new javax.swing.JButton();
         txtTitular = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
+        lblMoneda = new javax.swing.JLabel();
+        lblSaldoActual = new javax.swing.JLabel();
         txtSaldo = new javax.swing.JTextField();
-        jLabel6 = new javax.swing.JLabel();
-        RdBtnDeposito = new javax.swing.JRadioButton();
-        RdBtnRetiro = new javax.swing.JRadioButton();
-        RdBtnTransaccion = new javax.swing.JRadioButton();
-        jLabel1 = new javax.swing.JLabel();
+        lblTipoTransacción = new javax.swing.JLabel();
+        rdBtnDeposito = new javax.swing.JRadioButton();
+        rdBtnRetiro = new javax.swing.JRadioButton();
+        rdBtnTransferencia = new javax.swing.JRadioButton();
+        lblMonto = new javax.swing.JLabel();
         txtMonto = new javax.swing.JTextField();
-        jLabel7 = new javax.swing.JLabel();
+        lblCuentaDestino = new javax.swing.JLabel();
         txtCuentaDestino = new javax.swing.JTextField();
         btnBuscarCuentaDestino = new javax.swing.JButton();
-        jLabel8 = new javax.swing.JLabel();
+        lblTitularDestino = new javax.swing.JLabel();
         txtTitularDestino = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
-        jLabel9 = new javax.swing.JLabel();
+        lblMovimientos = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        Movimientos = new javax.swing.JTable();
+        tblHistorial = new javax.swing.JTable();
         txtMoneda = new javax.swing.JTextField();
         jPanel5 = new javax.swing.JPanel();
-        jLabel10 = new javax.swing.JLabel();
-        Aceptar = new javax.swing.JButton();
-        Cancelar = new javax.swing.JButton();
+        lblTransacciones = new javax.swing.JLabel();
+        btnAceptar = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
@@ -83,15 +133,15 @@ public class FrmTransacciones extends javax.swing.JInternalFrame implements IVis
         jPanel2.setBackground(new java.awt.Color(248, 249, 250));
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jLabel2.setFont(new java.awt.Font("Bell MT", 1, 18)); // NOI18N
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Iconos/maletin.png"))); // NOI18N
-        jLabel2.setText(" Cuenta Origen:");
+        lblCuentaOrigen.setFont(new java.awt.Font("Bell MT", 1, 18)); // NOI18N
+        lblCuentaOrigen.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblCuentaOrigen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Iconos/maletin.png"))); // NOI18N
+        lblCuentaOrigen.setText(" Cuenta Origen:");
 
-        jLabel3.setFont(new java.awt.Font("Bell MT", 1, 18)); // NOI18N
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Iconos/perfil.png"))); // NOI18N
-        jLabel3.setText("Titular:");
+        lblTitular.setFont(new java.awt.Font("Bell MT", 1, 18)); // NOI18N
+        lblTitular.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTitular.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Iconos/perfil.png"))); // NOI18N
+        lblTitular.setText("Titular:");
 
         txtCuentaOrigen.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtCuentaOrigen.setToolTipText("Ingrese número cuenta de origen");
@@ -115,15 +165,15 @@ public class FrmTransacciones extends javax.swing.JInternalFrame implements IVis
         txtTitular.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtTitular.setToolTipText("Nombre del titular");
 
-        jLabel4.setFont(new java.awt.Font("Bell MT", 1, 18)); // NOI18N
-        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Iconos/dolar.png"))); // NOI18N
-        jLabel4.setText("Moneda:");
+        lblMoneda.setFont(new java.awt.Font("Bell MT", 1, 18)); // NOI18N
+        lblMoneda.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblMoneda.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Iconos/dolar.png"))); // NOI18N
+        lblMoneda.setText("Moneda:");
 
-        jLabel5.setFont(new java.awt.Font("Bell MT", 1, 18)); // NOI18N
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Iconos/saco-de-dinero.png"))); // NOI18N
-        jLabel5.setText("Saldo Actual:");
+        lblSaldoActual.setFont(new java.awt.Font("Bell MT", 1, 18)); // NOI18N
+        lblSaldoActual.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblSaldoActual.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Iconos/saco-de-dinero.png"))); // NOI18N
+        lblSaldoActual.setText("Saldo Actual:");
 
         txtSaldo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtSaldo.setToolTipText("₡ 0.00");
@@ -133,44 +183,44 @@ public class FrmTransacciones extends javax.swing.JInternalFrame implements IVis
             }
         });
 
-        jLabel6.setFont(new java.awt.Font("Bell MT", 1, 18)); // NOI18N
-        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel6.setText("Tipo de Transacción:");
+        lblTipoTransacción.setFont(new java.awt.Font("Bell MT", 1, 18)); // NOI18N
+        lblTipoTransacción.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTipoTransacción.setText("Tipo de Transacción:");
 
-        RdBtnDeposito.setBackground(new java.awt.Color(255, 255, 255));
-        GrpBtnTransacciones.add(RdBtnDeposito);
-        RdBtnDeposito.setFont(new java.awt.Font("Bell MT", 1, 18)); // NOI18N
-        RdBtnDeposito.setText("Depositos");
-        RdBtnDeposito.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(233, 236, 239)));
-        RdBtnDeposito.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        RdBtnDeposito.setOpaque(true);
-        RdBtnDeposito.setPreferredSize(new java.awt.Dimension(120, 30));
-        RdBtnDeposito.addActionListener(new java.awt.event.ActionListener() {
+        rdBtnDeposito.setBackground(new java.awt.Color(255, 255, 255));
+        GrpBtnTransacciones.add(rdBtnDeposito);
+        rdBtnDeposito.setFont(new java.awt.Font("Bell MT", 1, 18)); // NOI18N
+        rdBtnDeposito.setText("Depositos");
+        rdBtnDeposito.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(233, 236, 239)));
+        rdBtnDeposito.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        rdBtnDeposito.setOpaque(true);
+        rdBtnDeposito.setPreferredSize(new java.awt.Dimension(120, 30));
+        rdBtnDeposito.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                RdBtnDepositoActionPerformed(evt);
+                rdBtnDepositoActionPerformed(evt);
             }
         });
 
-        RdBtnRetiro.setBackground(new java.awt.Color(255, 255, 255));
-        GrpBtnTransacciones.add(RdBtnRetiro);
-        RdBtnRetiro.setFont(new java.awt.Font("Bell MT", 1, 18)); // NOI18N
-        RdBtnRetiro.setText("Retiros");
-        RdBtnRetiro.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(233, 236, 239)));
-        RdBtnRetiro.setOpaque(true);
-        RdBtnRetiro.setPreferredSize(new java.awt.Dimension(120, 30));
+        rdBtnRetiro.setBackground(new java.awt.Color(255, 255, 255));
+        GrpBtnTransacciones.add(rdBtnRetiro);
+        rdBtnRetiro.setFont(new java.awt.Font("Bell MT", 1, 18)); // NOI18N
+        rdBtnRetiro.setText("Retiros");
+        rdBtnRetiro.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(233, 236, 239)));
+        rdBtnRetiro.setOpaque(true);
+        rdBtnRetiro.setPreferredSize(new java.awt.Dimension(120, 30));
 
-        RdBtnTransaccion.setBackground(new java.awt.Color(255, 255, 255));
-        GrpBtnTransacciones.add(RdBtnTransaccion);
-        RdBtnTransaccion.setFont(new java.awt.Font("Bell MT", 1, 18)); // NOI18N
-        RdBtnTransaccion.setText("Transferencias");
-        RdBtnTransaccion.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(233, 236, 239)));
-        RdBtnTransaccion.setOpaque(true);
-        RdBtnTransaccion.setPreferredSize(new java.awt.Dimension(120, 30));
+        rdBtnTransferencia.setBackground(new java.awt.Color(255, 255, 255));
+        GrpBtnTransacciones.add(rdBtnTransferencia);
+        rdBtnTransferencia.setFont(new java.awt.Font("Bell MT", 1, 18)); // NOI18N
+        rdBtnTransferencia.setText("Transferencias");
+        rdBtnTransferencia.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(233, 236, 239)));
+        rdBtnTransferencia.setOpaque(true);
+        rdBtnTransferencia.setPreferredSize(new java.awt.Dimension(120, 30));
 
-        jLabel1.setFont(new java.awt.Font("Bell MT", 1, 18)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Iconos/billete-de-banco.png"))); // NOI18N
-        jLabel1.setText("Monto:");
+        lblMonto.setFont(new java.awt.Font("Bell MT", 1, 18)); // NOI18N
+        lblMonto.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblMonto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Iconos/billete-de-banco.png"))); // NOI18N
+        lblMonto.setText("Monto:");
 
         txtMonto.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtMonto.setToolTipText("\"Cantidad a transferir\"");
@@ -180,10 +230,10 @@ public class FrmTransacciones extends javax.swing.JInternalFrame implements IVis
             }
         });
 
-        jLabel7.setFont(new java.awt.Font("Bell MT", 1, 18)); // NOI18N
-        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Iconos/tablero-de-tiro-con-arco.png"))); // NOI18N
-        jLabel7.setText("Cuenta Destino:");
+        lblCuentaDestino.setFont(new java.awt.Font("Bell MT", 1, 18)); // NOI18N
+        lblCuentaDestino.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblCuentaDestino.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Iconos/tablero-de-tiro-con-arco.png"))); // NOI18N
+        lblCuentaDestino.setText("Cuenta Destino:");
 
         txtCuentaDestino.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtCuentaDestino.setToolTipText("Ingrese número cuenta de destino");
@@ -199,10 +249,10 @@ public class FrmTransacciones extends javax.swing.JInternalFrame implements IVis
             }
         });
 
-        jLabel8.setFont(new java.awt.Font("Bell MT", 1, 18)); // NOI18N
-        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Iconos/compartir.png"))); // NOI18N
-        jLabel8.setText("Titular Destino:");
+        lblTitularDestino.setFont(new java.awt.Font("Bell MT", 1, 18)); // NOI18N
+        lblTitularDestino.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTitularDestino.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Iconos/compartir.png"))); // NOI18N
+        lblTitularDestino.setText("Titular Destino:");
 
         txtTitularDestino.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtTitularDestino.setToolTipText("Nombre del titular de destino");
@@ -213,10 +263,10 @@ public class FrmTransacciones extends javax.swing.JInternalFrame implements IVis
         jPanel4.setBackground(new java.awt.Color(52, 152, 219));
         jPanel4.setPreferredSize(new java.awt.Dimension(362, 50));
 
-        jLabel9.setFont(new java.awt.Font("Bell MT", 1, 24)); // NOI18N
-        jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Iconos/dinero.png"))); // NOI18N
-        jLabel9.setText("Movimientos");
+        lblMovimientos.setFont(new java.awt.Font("Bell MT", 1, 24)); // NOI18N
+        lblMovimientos.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblMovimientos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Iconos/dinero.png"))); // NOI18N
+        lblMovimientos.setText("Movimientos");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -224,40 +274,48 @@ public class FrmTransacciones extends javax.swing.JInternalFrame implements IVis
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel9)
+                .addComponent(lblMovimientos)
                 .addGap(162, 162, 162))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(jLabel9)
+                .addComponent(lblMovimientos)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
-        Movimientos.setBackground(new java.awt.Color(44, 62, 80));
-        Movimientos.setFont(new java.awt.Font("Bell MT", 1, 18)); // NOI18N
-        Movimientos.setForeground(new java.awt.Color(255, 255, 255));
-        Movimientos.setModel(new javax.swing.table.DefaultTableModel(
+        tblHistorial.setBackground(new java.awt.Color(44, 62, 80));
+        tblHistorial.setFont(new java.awt.Font("Bell MT", 1, 18)); // NOI18N
+        tblHistorial.setForeground(new java.awt.Color(255, 255, 255));
+        tblHistorial.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Titular", "Moneda", "Monto", "Saldo", "Estado"
+                "Fecha", "Tipo", "Monto", "Cuenta Origen", "Cuenta Destino", "Saldo Final"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Double.class, java.lang.Object.class
+                java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class, java.lang.Double.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
         });
-        jScrollPane1.setViewportView(Movimientos);
+        jScrollPane1.setViewportView(tblHistorial);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -281,11 +339,11 @@ public class FrmTransacciones extends javax.swing.JInternalFrame implements IVis
         jPanel5.setBackground(new java.awt.Color(52, 152, 219));
         jPanel5.setPreferredSize(new java.awt.Dimension(613, 50));
 
-        jLabel10.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel10.setFont(new java.awt.Font("Bell MT", 1, 24)); // NOI18N
-        jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Iconos/tarjeta-de-credito.png"))); // NOI18N
-        jLabel10.setText("Transacciones");
+        lblTransacciones.setBackground(new java.awt.Color(255, 255, 255));
+        lblTransacciones.setFont(new java.awt.Font("Bell MT", 1, 24)); // NOI18N
+        lblTransacciones.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTransacciones.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Iconos/tarjeta-de-credito.png"))); // NOI18N
+        lblTransacciones.setText("Transacciones");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -293,31 +351,41 @@ public class FrmTransacciones extends javax.swing.JInternalFrame implements IVis
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGap(193, 193, 193)
-                .addComponent(jLabel10)
+                .addComponent(lblTransacciones)
                 .addContainerGap(216, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(jLabel10)
+                .addComponent(lblTransacciones)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
-        Aceptar.setBackground(new java.awt.Color(46, 204, 113));
-        Aceptar.setFont(new java.awt.Font("Bell MT", 1, 12)); // NOI18N
-        Aceptar.setForeground(new java.awt.Color(255, 255, 255));
-        Aceptar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Iconos/aceptar.png"))); // NOI18N
-        Aceptar.setText("Procesar Transacción");
-        Aceptar.setBorderPainted(false);
-        Aceptar.setFocusPainted(false);
+        btnAceptar.setBackground(new java.awt.Color(46, 204, 113));
+        btnAceptar.setFont(new java.awt.Font("Bell MT", 1, 12)); // NOI18N
+        btnAceptar.setForeground(new java.awt.Color(255, 255, 255));
+        btnAceptar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Iconos/aceptar.png"))); // NOI18N
+        btnAceptar.setText("Procesar Transacción");
+        btnAceptar.setBorderPainted(false);
+        btnAceptar.setFocusPainted(false);
+        btnAceptar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAceptarActionPerformed(evt);
+            }
+        });
 
-        Cancelar.setBackground(new java.awt.Color(231, 76, 60));
-        Cancelar.setFont(new java.awt.Font("Bell MT", 1, 12)); // NOI18N
-        Cancelar.setForeground(new java.awt.Color(255, 255, 255));
-        Cancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Iconos/cancelar.png"))); // NOI18N
-        Cancelar.setText("Cancelar Transacción");
-        Cancelar.setBorderPainted(false);
-        Cancelar.setFocusPainted(false);
+        btnCancelar.setBackground(new java.awt.Color(231, 76, 60));
+        btnCancelar.setFont(new java.awt.Font("Bell MT", 1, 12)); // NOI18N
+        btnCancelar.setForeground(new java.awt.Color(255, 255, 255));
+        btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Iconos/cancelar.png"))); // NOI18N
+        btnCancelar.setText("Cancelar Transacción");
+        btnCancelar.setBorderPainted(false);
+        btnCancelar.setFocusPainted(false);
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -335,38 +403,38 @@ public class FrmTransacciones extends javax.swing.JInternalFrame implements IVis
                                         .addComponent(txtCuentaOrigen, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(btnBuscarCuentaOrigen))
-                                    .addComponent(jLabel5)
+                                    .addComponent(lblSaldoActual)
                                     .addComponent(txtSaldo, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel2))
+                                    .addComponent(lblCuentaOrigen))
                                 .addGap(60, 60, 60)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(txtTitular, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jLabel4)))
+                                    .addComponent(lblTitular)
+                                    .addComponent(lblMoneda)))
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                                             .addGap(34, 34, 34)
-                                            .addComponent(Aceptar, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addComponent(btnAceptar, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addGroup(jPanel2Layout.createSequentialGroup()
                                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(jLabel7)
+                                                .addComponent(lblCuentaDestino)
                                                 .addComponent(txtCuentaDestino, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE))
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                             .addComponent(btnBuscarCuentaDestino))
-                                        .addComponent(RdBtnDeposito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jLabel6)
-                                        .addComponent(RdBtnRetiro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(RdBtnTransaccion, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(rdBtnDeposito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(lblTipoTransacción)
+                                        .addComponent(rdBtnRetiro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(rdBtnTransferencia, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(65, 65, 65)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(Cancelar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnCancelar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(txtMonto, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(txtTitularDestino, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jLabel8)
-                                        .addComponent(jLabel1)
+                                        .addComponent(lblTitularDestino)
+                                        .addComponent(lblMonto)
                                         .addComponent(txtMoneda, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -379,7 +447,7 @@ public class FrmTransacciones extends javax.swing.JInternalFrame implements IVis
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2)
+                        .addComponent(lblCuentaOrigen)
                         .addGap(12, 12, 12)
                         .addComponent(btnBuscarCuentaOrigen))
                     .addGroup(jPanel2Layout.createSequentialGroup()
@@ -389,19 +457,19 @@ public class FrmTransacciones extends javax.swing.JInternalFrame implements IVis
                                 .addComponent(txtCuentaOrigen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel3)))
+                                .addComponent(lblTitular)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(txtTitular, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(4, 4, 4)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel5)
+                                .addComponent(lblSaldoActual)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(txtSaldo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(46, 46, 46)
-                                .addComponent(jLabel7))
+                                .addComponent(lblCuentaDestino))
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel4)
+                                .addComponent(lblMoneda)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(txtMoneda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(19, 19, 19)))))
@@ -410,34 +478,34 @@ public class FrmTransacciones extends javax.swing.JInternalFrame implements IVis
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(txtCuentaDestino, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(44, 44, 44)
-                        .addComponent(jLabel6)
+                        .addComponent(lblTipoTransacción)
                         .addGap(25, 25, 25)
-                        .addComponent(RdBtnDeposito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(rdBtnDeposito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(btnBuscarCuentaDestino)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(44, 44, 44)
-                        .addComponent(jLabel8)
+                        .addComponent(lblTitularDestino)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(txtTitularDestino, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(35, 35, 35)
-                        .addComponent(RdBtnRetiro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(rdBtnRetiro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel1)
+                        .addComponent(lblMonto)
                         .addGap(18, 18, 18)))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(txtMonto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(41, 41, 41))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(RdBtnTransaccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(rdBtnTransferencia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(24, 24, 24)))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(Aceptar)
-                    .addComponent(Cancelar))
+                    .addComponent(btnAceptar)
+                    .addComponent(btnCancelar))
                 .addGap(45, 45, 45))
             .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -463,51 +531,103 @@ public class FrmTransacciones extends javax.swing.JInternalFrame implements IVis
     }//GEN-LAST:event_txtCuentaOrigenActionPerformed
 
     private void btnBuscarCuentaOrigenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarCuentaOrigenActionPerformed
-        // TODO add your handling code here:
+        String numeroCuenta = txtCuentaOrigen.getText().trim();
+        if (numeroCuenta.isEmpty()) {
+            mostrarError("Debe ingresar un número de cuenta");
+            return;
+        }
+        controlador.buscarCuentaOrigen(numeroCuenta);
     }//GEN-LAST:event_btnBuscarCuentaOrigenActionPerformed
 
     private void txtSaldoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSaldoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtSaldoActionPerformed
 
-    private void RdBtnDepositoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RdBtnDepositoActionPerformed
+    private void rdBtnDepositoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdBtnDepositoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_RdBtnDepositoActionPerformed
+    }//GEN-LAST:event_rdBtnDepositoActionPerformed
 
     private void txtMontoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMontoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtMontoActionPerformed
 
     private void btnBuscarCuentaDestinoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarCuentaDestinoActionPerformed
-        // TODO add your handling code here:
+        String numeroCuenta = txtCuentaDestino.getText().trim();
+        if (numeroCuenta.isEmpty()) {
+            mostrarError("Debe ingresar un número de cuenta destino");
+            return;
+        }
+        controlador.buscarCuentaDestino(numeroCuenta);
     }//GEN-LAST:event_btnBuscarCuentaDestinoActionPerformed
+
+    private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
+        try {
+       
+        String cuentaOrigen = txtCuentaOrigen.getText().trim();
+        String cuentaDestino = txtCuentaDestino.getText().trim();
+        String montoTexto = txtMonto.getText().trim();
+        
+        
+        if (montoTexto.isEmpty()) {
+            mostrarError("Debe ingresar un monto");
+            return;
+        }
+        
+       
+        double monto = Double.parseDouble(montoTexto);
+        
+        
+        if (monto <= 0) {
+            mostrarError("El monto debe ser mayor a cero");
+            return;
+        }
+        
+    
+        controlador.ejecutarTransaccion(
+            cuentaOrigen,
+            cuentaDestino,
+            monto,  
+            rdBtnDeposito.isSelected(),
+            rdBtnRetiro.isSelected(),
+            rdBtnTransferencia.isSelected()
+        );
+        
+    } catch (NumberFormatException e) {
+        mostrarError("El monto debe ser un número válido");
+    }
+
+    }//GEN-LAST:event_btnAceptarActionPerformed
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        limpiar();
+    }//GEN-LAST:event_btnCancelarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton Aceptar;
-    private javax.swing.JButton Cancelar;
     private javax.swing.ButtonGroup GrpBtnTransacciones;
-    private javax.swing.JTable Movimientos;
-    private javax.swing.JRadioButton RdBtnDeposito;
-    private javax.swing.JRadioButton RdBtnRetiro;
-    private javax.swing.JRadioButton RdBtnTransaccion;
+    private javax.swing.JButton btnAceptar;
     private javax.swing.JButton btnBuscarCuentaDestino;
     private javax.swing.JButton btnBuscarCuentaOrigen;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
+    private javax.swing.JButton btnCancelar;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblCuentaDestino;
+    private javax.swing.JLabel lblCuentaOrigen;
+    private javax.swing.JLabel lblMoneda;
+    private javax.swing.JLabel lblMonto;
+    private javax.swing.JLabel lblMovimientos;
+    private javax.swing.JLabel lblSaldoActual;
+    private javax.swing.JLabel lblTipoTransacción;
+    private javax.swing.JLabel lblTitular;
+    private javax.swing.JLabel lblTitularDestino;
+    private javax.swing.JLabel lblTransacciones;
+    private javax.swing.JRadioButton rdBtnDeposito;
+    private javax.swing.JRadioButton rdBtnRetiro;
+    private javax.swing.JRadioButton rdBtnTransferencia;
+    private javax.swing.JTable tblHistorial;
     private javax.swing.JTextField txtCuentaDestino;
     private javax.swing.JTextField txtCuentaOrigen;
     private javax.swing.JTextField txtMoneda;
@@ -519,36 +639,53 @@ public class FrmTransacciones extends javax.swing.JInternalFrame implements IVis
 
     @Override
     public void limpiar() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        lblCuentaDestino.setText("");
+        lblCuentaOrigen.setText("");
+        lblMoneda.setText("");
+        lblMonto.setText("");
+        lblTitular.setText("");
+        lblTitularDestino.setText("");
     }
 
     @Override
     public void cambiarEstadoCampos(boolean estado) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        txtCuentaOrigen.setEnabled(estado);
+        txtCuentaDestino.setEnabled(estado);
+        txtMonto.setEnabled(estado);
     }
 
     @Override
     public void mostrarDatos(Transaccion entidad) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        DefaultTableModel model = (DefaultTableModel) tblHistorial.getModel();
+        model.addRow(new Object[]{
+        entidad.getFecha(),
+        entidad.getTipotransaccion(),
+        entidad.getMonto(),
+        entidad.getCuentaOrigen(),
+        entidad.getCuentaDestino(),
+        entidad.getSaldoFinal()
+    });
     }
 
     @Override
     public boolean confirmar(String msg, String titulo) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        int opcion = JOptionPane.showConfirmDialog(this, msg, "¿Desea realmente cancelar la transacción?", JOptionPane.YES_NO_OPTION);
+        return opcion == JOptionPane.YES_OPTION;
     }
 
     @Override
     public void mostrarMensaje(String msg, String titulo) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        JOptionPane.showMessageDialog(this, msg, "Cuenta no encontrada", JOptionPane.INFORMATION_MESSAGE);
     }
 
     @Override
     public void mostrarError(String msg) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        JOptionPane.showMessageDialog(this, msg, "Saldo insuficiente", JOptionPane.INFORMATION_MESSAGE);
     }
 
     @Override
     public String solicitar(String msg, String titulo) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+
 }
