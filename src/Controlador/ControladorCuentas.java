@@ -6,6 +6,7 @@ package Controlador;
 
 import Modelo.ServicioCuentas;
 import Modelo.Cuenta;
+import Modelo.EstadoCuenta;
 import Modelo.TipoCuenta;
 import Vista.IVista;
 import java.util.List;
@@ -91,4 +92,13 @@ public class ControladorCuentas {
             vista.mostrarError("Error al transferir: " + e.getMessage());
         }
     }
+   
+   public void actualizarEstadoCuenta(String numero, EstadoCuenta estado) {
+    try {
+        servicio.actualizarCuenta(numero, estado);
+        vista.mostrarMensaje("Estado actualizado", "Éxito");
+    } catch (Exception ex) {
+        vista.mostrarError(ex.getMessage());
+    }
+   }
 }

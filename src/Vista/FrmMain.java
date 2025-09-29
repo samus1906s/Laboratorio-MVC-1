@@ -41,6 +41,7 @@ public class FrmMain extends javax.swing.JFrame {
         menuBar = new javax.swing.JMenuBar();
         menuAdmin = new javax.swing.JMenu();
         menuClientes = new javax.swing.JMenuItem();
+        menuAdminCuentas = new javax.swing.JMenuItem();
         menuTransacciones = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -67,6 +68,15 @@ public class FrmMain extends javax.swing.JFrame {
             }
         });
         menuAdmin.add(menuClientes);
+
+        menuAdminCuentas.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        menuAdminCuentas.setText("AdminCuentas");
+        menuAdminCuentas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuAdminCuentasActionPerformed(evt);
+            }
+        });
+        menuAdmin.add(menuAdminCuentas);
 
         menuTransacciones.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         menuTransacciones.setText("Transacciones");
@@ -111,6 +121,14 @@ public class FrmMain extends javax.swing.JFrame {
         frm2.setVisible(true);
     }//GEN-LAST:event_menuTransaccionesActionPerformed
 
+    private void menuAdminCuentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuAdminCuentasActionPerformed
+    IGestorCuentas gestor = new GestorCuentas();
+    ServicioCuentas servicio = new ServicioCuentas(gestor);
+    FrmAdminCuentas frm = new FrmAdminCuentas(servicio);
+    this.dtpMenu.add(frm);
+    frm.setVisible(true);
+    }//GEN-LAST:event_menuAdminCuentasActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -139,6 +157,7 @@ public class FrmMain extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDesktopPane dtpMenu;
     private javax.swing.JMenu menuAdmin;
+    private javax.swing.JMenuItem menuAdminCuentas;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem menuClientes;
     private javax.swing.JMenuItem menuTransacciones;
