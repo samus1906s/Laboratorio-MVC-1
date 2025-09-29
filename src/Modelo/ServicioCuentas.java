@@ -12,10 +12,13 @@ import java.util.List;
  */
 public class ServicioCuentas {
     private final IGestorCuentas gestor;
+    private final Transaccion gestorT;
 
-    public ServicioCuentas(IGestorCuentas gestor) {
+    public ServicioCuentas(IGestorCuentas gestor, Transaccion gestorT) {
         this.gestor = gestor;
+        this.gestorT = gestorT;
     }
+    
     
     public void crearCuenta(String titularId, TipoCuenta tipo) throws Exception{
         validarRequeridos(titularId);
@@ -38,6 +41,10 @@ public class ServicioCuentas {
     
     public List<Cuenta> listarCuentas(){
         return gestor.listar();
+    }
+    
+    public TipoTransaccion getHistorial(){
+        return gestorT.getTipotransaccion();
     }
     
     public void depositar(String numero, double monto) throws Exception{
