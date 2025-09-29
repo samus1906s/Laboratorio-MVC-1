@@ -24,7 +24,18 @@ public class FrmAdminCuentas extends javax.swing.JInternalFrame implements IVist
     public FrmAdminCuentas(ServicioCuentas servicio) {
         initComponents();
         
-         controlador = new ControladorCuentas(servicio, this);
+
+        controlador = new ControladorCuentas(servicio, this);
+        
+        inicializarCombos();
+        
+    }
+    
+     private void inicializarCombos() {
+   cmbTipoCuenta.setModel(new DefaultComboBoxModel<>(TipoCuenta.values()));
+cmbEsatdo.setModel(new DefaultComboBoxModel<>(EstadoCuenta.values()));
+        cmbTipoCuenta.setSelectedIndex(0);
+        cmbEsatdo.setSelectedIndex(0);
     }
 
     /**
@@ -105,11 +116,11 @@ public class FrmAdminCuentas extends javax.swing.JInternalFrame implements IVist
         jLabel7.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         cmbTipoCuenta.setFont(new java.awt.Font("Calisto MT", 0, 14)); // NOI18N
-        cmbTipoCuenta.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Colones", "Dolares ", " " }));
+        cmbTipoCuenta.setModel(cmbTipoCuenta.getModel());
         cmbTipoCuenta.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
 
         cmbEsatdo.setFont(new java.awt.Font("Calisto MT", 0, 14)); // NOI18N
-        cmbEsatdo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Activa", "Inactiva", " " }));
+        cmbEsatdo.setModel(cmbEsatdo.getModel());
         cmbEsatdo.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
 
         btnCrear.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Vista/Iconos/guardar.png"))); // NOI18N
@@ -307,24 +318,52 @@ public class FrmAdminCuentas extends javax.swing.JInternalFrame implements IVist
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearActionPerformed
-    String titularId = txtTitularId.getText().trim();
+       String titularId = txtTitularId.getText().trim();
     TipoCuenta tipo = (TipoCuenta) cmbTipoCuenta.getSelectedItem();
-    controlador.crearCuenta(titularId, tipo); 
+    
+    if (titularId.isEmpty() || tipo == null) {
+        mostrarError("Debe ingresar el ID del titular y seleccionar un tipo");
+        return;
+    }
+    
+    controlador.crearCuenta(titularId, tipo);
+    
     }//GEN-LAST:event_btnCrearActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-    String numero = txtBuscar1.getText().trim();
+     String numero = txtBuscar1.getText().trim();
+    
+    if (numero.isEmpty()) {
+        mostrarError("Debe ingresar el número de cuenta");
+        return;
+    }
+    
     controlador.buscarCuenta(numero);
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void btnActualizarEstadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarEstadoActionPerformed
-     String numero = txtBuscar1.getText().trim();
+   String numero = txtBuscar1.getText().trim();
     EstadoCuenta estado = (EstadoCuenta) cmbEsatdo.getSelectedItem();
+    TipoCuenta tipo = (TipoCuenta) cmbTipoCuenta.getSelectedItem();
+    
+    if (numero.isEmpty() || estado == null || tipo == null) {
+        mostrarError("Debe ingresar el número de cuenta y seleccionar estado y tipo");
+        return;
+    }
+    
+    // Actualizar ambos: estado Y tipo
     controlador.actualizarEstadoCuenta(numero, estado);
+    controlador.actualizarTipoCuenta(numero, tipo);
     }//GEN-LAST:event_btnActualizarEstadoActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-       String numero = txtBuscar1.getText().trim();
+   String numero = txtBuscar1.getText().trim();
+    
+    if (numero.isEmpty()) {
+        mostrarError("Debe ingresar el número de cuenta");
+        return;
+    }
+    
     controlador.eliminarCuenta(numero);
     }//GEN-LAST:event_btnEliminarActionPerformed
 
@@ -344,8 +383,8 @@ public class FrmAdminCuentas extends javax.swing.JInternalFrame implements IVist
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnListar;
-    private javax.swing.JComboBox<String> cmbEsatdo;
-    private javax.swing.JComboBox<String> cmbTipoCuenta;
+    private javax.swing.JComboBox<EstadoCuenta> cmbEsatdo;
+    private javax.swing.JComboBox<TipoCuenta> cmbTipoCuenta;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -353,11 +392,9 @@ public class FrmAdminCuentas extends javax.swing.JInternalFrame implements IVist
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel lblTitularNombre;
     private javax.swing.JTable tblCuentas;
     private javax.swing.JTextField txtBuscar1;
@@ -368,8 +405,8 @@ public class FrmAdminCuentas extends javax.swing.JInternalFrame implements IVist
     public void limpiar() {
     txtBuscar1.setText("");
     txtTitularId.setText("");
-    cmbTipoCuenta.setSelectedIndex(-1);
-    cmbEsatdo.setSelectedIndex(-1);
+   cmbTipoCuenta.setSelectedIndex(0); 
+    cmbEsatdo.setSelectedIndex(0);      
     lblTitularNombre.setText("");
 
     DefaultTableModel model = (DefaultTableModel) tblCuentas.getModel();

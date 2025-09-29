@@ -16,7 +16,7 @@ public class Cuenta {
     private double monto;
     private double saldo;
     private EstadoCuenta estado;
-    private final TipoCuenta tipo;
+    private TipoCuenta tipo;
 
     public Cuenta(String numero, String titularId, TipoCuenta tipo) {
         this.numero = Objects.requireNonNull(numero);
@@ -62,4 +62,10 @@ public class Cuenta {
     public TipoCuenta getTipo() {
         return tipo;
     }
+
+    public void setTipo(TipoCuenta tipo) {
+        this.tipo = tipo;
+    }
+    
+    
 }

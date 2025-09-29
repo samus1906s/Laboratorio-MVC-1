@@ -65,4 +65,9 @@ public class ServicioCuentas {
         }
     }
     
+    public void actualizarTipoCuenta(String numero, TipoCuenta tipo) throws Exception {
+    Cuenta cuenta = buscarCuenta(numero);
+    cuenta.setTipo(tipo);
+}
+    
 }
