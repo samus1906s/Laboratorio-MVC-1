@@ -7,6 +7,7 @@ package Modelo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import Modelo.Cuenta;
 
 /**
  *
@@ -14,15 +15,16 @@ import java.util.Objects;
  */
 public class GestorCuentas implements IGestorCuentas{
     private final List<Cuenta> cuentas;
+    private final List<Transaccion> historial;
     private static final String DIGITOS = "123";
     private long consec;
 
     public GestorCuentas() {
         this.cuentas = new ArrayList<>();
         this.consec = 1;
+        this.historial = new ArrayList<>();
     }
-    
-    
+
     private String generarNumeros(){
         String numConsec = String.format("%017d", consec++);
         return DIGITOS + numConsec;
@@ -72,6 +74,7 @@ public class GestorCuentas implements IGestorCuentas{
        if (cuenta.getEstado()!= EstadoCuenta.ACTIVA) throw new Exception("Cuenta no activa");
        if (monto <=0) throw new Exception("El monto no puede ser menos de 0 o negativo");
        cuenta.setSaldo(cuenta.getSaldo()+monto);
+       historial.add(Transaccion(TipoTransaccion.DEPOSITO, monto, numero, null, cuenta.getSaldo()));
     }
 
     @Override
@@ -82,6 +85,7 @@ public class GestorCuentas implements IGestorCuentas{
        if (monto <=0) throw new Exception("El monto debe ser positivo");
        if (cuenta.getSaldo()<monto) throw new Exception("Saldo insuficiente");
        cuenta.setSaldo(cuenta.getSaldo()-monto);
+       historial.add(Transaccion(TipoTransaccion.RETIRO, monto, numero, null, cuenta.getSaldo()));
     }
 
     @Override
@@ -89,5 +93,12 @@ public class GestorCuentas implements IGestorCuentas{
         if (origen.equals(destino)) throw new Exception("No se puede transferir a la misma cuenta de origen");
         retirar(origen, monto);
         depositar(destino, monto);
+        
+        Cuenta cuentaOrigen = buscar(origen);
+        historial.add(Transaccion(TipoTransaccion.TRANSFERENCIA, monto, origen, null, cuentaOrigen.getSaldo()));
+    }
+
+    private Transaccion Transaccion(TipoTransaccion tipoTransaccion, double monto, String origen, Object object, double saldo) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
